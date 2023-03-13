@@ -36,7 +36,15 @@ class PostController {
 
     async update(req, res) {
         try{
-
+            const post = req.body
+            
+            if (!post.id){
+                return res.status(400).json({'message': 'Id не указан'})
+            }
+            
+            const updatedPost = await Post.findByPk(post.id)
+            await updatedPost.update(post)
+            return res.json(updatedPost)            
         } catch (e) {
             res.status(500).json(e)
         }
@@ -44,7 +52,14 @@ class PostController {
 
     async delete(req, res) {
         try{
+            const {id} = req.params
+            if (!id){
+                return res.status(400).json({'message': 'Id не указан'})
+            }
 
+            const deletePost = await Post.findByPk(id)
+            await deletePost.destroy()
+            return res.json(deletePost)         
         } catch (e) {
             res.status(500).json(e)
         }
